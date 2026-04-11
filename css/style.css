@@ -1,0 +1,9 @@
+body {
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+}
+
+.nav-header {
+  color: rgb(59, 50, 50);
+  letter-spacing: -0.02em;
+}
