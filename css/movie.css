@@ -1,0 +1,80 @@
+body {
+  margin: 0;
+  background: #0f0f0f;
+}
+
+.movie-hero {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+}
+
+.movie-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent),
+    linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.movie-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 60px 80px 60px;
+  max-width: 700px;
+}
+
+.movie-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+}
+
+.movie-meta {
+  color: #bbb;
+  margin-bottom: 15px;
+}
+
+.movie-overview {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #ccc;
+}
+
+.trailer-wrapper {
+  margin-top: 30px;
+}
+
+.trailer-wrapper iframe {
+  width: 100%;
+  max-width: 700px;
+  height: 350px;
+  border-radius: 12px;
+  border: none;
+}
+
+.back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+}

@@ -17,10 +17,12 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <header class="bg-info">
+    <header class="position-absolute w-100 top-0 z-3">
       <nav class="navbar navbar-expand-lg">
         <div class="container-fluid px-4">
-          <a class="nav-header navbar-brand fw-bolder" href="#">StreamMini</a>
+          <a class="nav-header text-white navbar-brand fw-bolder" href="#"
+            >StreamMini</a
+          >
           <button
             class="navbar-toggler"
             type="button"
@@ -36,6 +38,9 @@
               <li class="nav-item">
                 <a class="nav-link fw-bold" href="#rows">Browse</a>
               </li>
+              <li class="nav-item">
+                <a href="mylist.html" class="nav-link fw-bold">My List</a>
+              </li>
             </ul>
             <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
               <input
@@ -50,6 +55,64 @@
       </nav>
     </header>
 
+    <section id="heroCarousel" class=""></section>
+    <main>
+      <section id="rows" class="mt-4 px-4">
+        <div id="movieRows"></div>
+      </section>
+    </main>
+    <footer class="footer mt-5">
+      <div class="container-fluid px-5 py-5">
+        <div class="row">
+          <div class="col-md-3 mb-4">
+            <h5 class="footer-logo">StreamMini</h5>
+            <p class="footer-text">Watch trending movies anytime, anywhere.</p>
+          </div>
+
+          <div class="col-6 col-md-2 mb-4">
+            <h6>Browse</h6>
+            <ul>
+              <li><a href="#">Home</a></li>
+              <li><a href="#">Trending</a></li>
+              <li><a href="#">Top Rated</a></li>
+            </ul>
+          </div>
+
+          <div class="col-6 col-md-2 mb-4">
+            <h6>Account</h6>
+            <ul>
+              <li><a href="mylist.html">My List</a></li>
+              <li><a href="#">Profile</a></li>
+            </ul>
+          </div>
+
+          <div class="col-6 col-md-2 mb-4">
+            <h6>Help</h6>
+            <ul>
+              <li><a href="#">Support</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="col-md-3 mb-4">
+            <h6>Follow</h6>
+            <div class="social-icons">
+              <span>🌐</span>
+              <span>🐦</span>
+              <span>📺</span>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <p class="text-center footer-copy">
+          © 2026 StreamMini. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <div id="toast" class="toast-box"></div>
+    <button id="scrollTopBtn">↑</button>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
