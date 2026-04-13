@@ -90,10 +90,21 @@ function isInMyList(id) {
 }
 
 async function getTrendingMovies() {
-  const res = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`);
+  try {
+    const res = await fetch(
+      `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`,
+    );
 
-  const data = await res.json();
-  return data.results;
+    if (!res.ok) {
+      throw new Error('API error: ' + res.status);
+    }
+
+    const data = await res.json();
+    return data.results;
+  } catch (error) {
+    console.error('Trending fetch error:', error);
+    return [];
+  }
 }
 
 function toggleMyList(e, id, title, poster, btn) {
@@ -202,23 +213,23 @@ async function getMoviesByGenre(genreId) {
   return data.results;
 }
 
-function renderTrendingRow(movies) {
-  const container = document.getElementById('trendingRow');
+// function renderTrendingRow(movies) {
+//   const container = document.getElementById('trendingRow');
 
-  container.innerHTML = movies
-    .map(
-      (movie) => `
-      <div class="movie-card" onclick="goToMovie(${movie.id})">
-        <img 
-          src="https://image.tmdb.org/t/p/w500${movie.poster_path}" 
-          alt="${movie.title}"
-        />
-        <p class="text-white small mt-1">${movie.title}</p>
-      </div>
-    `,
-    )
-    .join('');
-}
+//   container.innerHTML = movies
+//     .map(
+//       (movie) => `
+//       <div class="movie-card" onclick="goToMovie(${movie.id})">
+//         <img
+//           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
+//           alt="${movie.title}"
+//         />
+//         <p class="text-white small mt-1">${movie.title}</p>
+//       </div>
+//     `,
+//     )
+//     .join('');
+// }
 
 function createRow(title, movies, rowId) {
   return `
@@ -334,14 +345,25 @@ async function renderAllRows() {
     container.classList.add('fade-in');
   } catch (error) {
     console.error('Error loading rows:', error);
-    container.innerHTML = `<p class="text-danger">Failed to load movies</p>`;
+    container.innerHTML = container.innerHTML = `
+  <div class="error-state">
+    <h2>⚠️ Failed to load movies</h2>
+    <p>Please check your internet connection</p>
+  </div>
+`;
   }
 }
 
 async function init() {
-  const movies = await getTrendingMovies();
-  createCarousel(movies);
-  renderAllRows();
+  try {
+    const movies = await getTrendingMovies();
+
+    if (movies.length > 0) createCarousel(movies);
+
+    renderAllRows();
+  } catch (error) {
+    console.error('Init error:', error);
+  }
 }
 
 init();

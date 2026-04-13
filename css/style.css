@@ -1,3 +1,8 @@
+html,
+body {
+  height: 100%;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,6 +12,13 @@ body {
   font-optical-sizing: auto;
   background: #0f0f0f;
   color: white;
+
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
 }
 
 .navbar {
@@ -328,4 +340,20 @@ body {
 #scrollTopBtn:hover {
   background: rgba(0, 0, 0, 0.9);
   transform: scale(1.1);
+}
+
+.error-state {
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+  color: #aaa;
+}
+
+.error-state h2 {
+  color: #ff4c4c;
+  margin-bottom: 10px;
 }
