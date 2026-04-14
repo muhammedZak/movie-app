@@ -1,0 +1,107 @@
+
+.login-page {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+
+.login-bg {
+  position: absolute;
+  inset: 0;
+  background: url('https://image.tmdb.org/t/p/original/9faGSFi5jam6pDWGNd0p8JcJgXQ.jpg')
+    no-repeat center center/cover;
+  z-index: 0;
+}
+
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+
+.login-container {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.login-card {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  padding: 40px;
+  width: 320px;
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+
+.login-card h2 {
+  font-weight: 700;
+}
+
+
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 6px;
+  background: #333;
+  color: white;
+}
+
+.login-card input:focus {
+  outline: none;
+  border: 1px solid #e50914;
+}
+
+
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  background: #e50914;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.login-card button:hover {
+  background: #f6121d;
+}
+
+
+.login-card a {
+  color: #e50914;
+  text-decoration: none;
+}
+
+.login-card a:hover {
+  text-decoration: underline;
+}
+
+.login-card {
+  animation: fadeIn 0.8s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

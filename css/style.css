@@ -357,3 +357,61 @@ main {
   color: #ff4c4c;
   margin-bottom: 10px;
 }
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: #e50914;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.profile-menu {
+  position: relative;
+}
+
+.dropdown-menu-custom {
+  position: absolute;
+  top: 30px;
+  right: 0;
+  background: #111;
+  padding: 15px;
+  border-radius: 8px;
+  min-width: 150px;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: 0.3s;
+
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.profile-menu:hover .dropdown-menu-custom {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.dropdown-menu-custom a,
+.dropdown-menu-custom button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #ccc;
+  padding: 5px 0;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dropdown-menu-custom a:hover,
+.dropdown-menu-custom button:hover {
+  color: white;
+}

@@ -1,6 +1,47 @@
 const API_KEY = 'a8ad44719bcd4d6f7d54ba6bf9c58086';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
+function renderAuthUI() {
+  const authSection = document.getElementById('authSection');
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+
+  if (!user) {
+    authSection.innerHTML = `
+      <a href="login.html" class="btn btn-outline-light btn-sm px-3">
+        Login
+      </a>
+    `;
+  } else {
+    const firstLetter = user.name.charAt(0).toUpperCase();
+
+    authSection.innerHTML = `
+      <div class="profile-menu">
+        <div class="avatar">${firstLetter}</div>
+
+        <div class="dropdown-menu-custom">
+          <p class="mb-2 fw-bold">${user.name}</p>
+          <a href="mylist.html">My List</a>
+          <button onclick="logout()">Logout</button>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function handlePlay(movieId) {
+  if (!isAuthenticated()) {
+    // Optional: save where user wanted to go
+    localStorage.setItem('redirectAfterLogin', `movie.html?id=${movieId}`);
+
+    // Redirect to login
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // If logged in → allow access
+  window.location.href = `movie.html?id=${movieId}`;
+}
+
 window.addEventListener('scroll', () => {
   const navbar = document.querySelector('.navbar');
 
@@ -77,16 +118,70 @@ function showToast(message) {
   }, 2000);
 }
 
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('currentUser'));
+}
+
 function getMyList() {
-  return JSON.parse(localStorage.getItem('myList')) || [];
+  const user = getCurrentUser();
+  if (!user) return [];
+
+  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
+
+  return allLists[user.email] || [];
 }
 
 function saveMyList(list) {
-  localStorage.setItem('myList', JSON.stringify(list));
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
+
+  allLists[user.email] = list;
+
+  localStorage.setItem('myList', JSON.stringify(allLists));
 }
 
 function isInMyList(id) {
-  return getMyList().some((movie) => movie.id === id);
+  return getMyList().some((movie) => Number(movie.id) === Number(id));
+}
+
+function toggleMyList(e, id, title, poster, btn) {
+  e.stopPropagation();
+
+  if (!isAuthenticated()) {
+    showToast('Please login to add watchlist 🔒');
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 1000);
+    return;
+  }
+
+  let list = getMyList();
+  let added = false;
+
+  const exists = list.some((m) => Number(m.id) === Number(id));
+
+  if (exists) {
+    list = list.filter((m) => m.id !== id);
+    added = false;
+  } else {
+    list.push({ id, title, poster_path: poster });
+    added = true;
+  }
+
+  saveMyList(list);
+
+  const heart = btn.querySelector('.heart');
+  heart.classList.add('animate');
+
+  setTimeout(() => {
+    heart.classList.remove('animate');
+  }, 300);
+
+  renderAllRows();
+
+  showToast(added ? 'Added to My List ❤️' : 'Removed from My List ❌');
 }
 
 async function getTrendingMovies() {
@@ -107,33 +202,6 @@ async function getTrendingMovies() {
   }
 }
 
-function toggleMyList(e, id, title, poster, btn) {
-  e.stopPropagation();
-
-  let list = getMyList();
-  let added = false;
-
-  if (isInMyList(id)) {
-    list = list.filter((m) => m.id !== id);
-  } else {
-    list.push({ id, title, poster_path: poster });
-    added = true;
-  }
-
-  saveMyList(list);
-
-  const heart = btn.querySelector('.heart');
-  heart.classList.add('animate');
-
-  setTimeout(() => {
-    heart.classList.remove('animate');
-  }, 300);
-
-  renderAllRows();
-
-  showToast(added ? 'Added to My List ❤️' : 'Removed from My List ❌');
-}
-
 function createCarousel(movies) {
   const carouselContainer = document.getElementById('heroCarousel');
 
@@ -141,7 +209,6 @@ function createCarousel(movies) {
     <div id="carouselExample" class="w-100 carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         ${movies
-
           .map(
             (movie, index) => `
             <div class="carousel-item ${index === 0 ? 'active' : ''}">
@@ -168,7 +235,7 @@ function createCarousel(movies) {
                   </p>
 
                   <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-light btn-lg px-4">
+                    <button class="btn btn-light btn-lg px-4" onclick="handlePlay(${movie.id})">
                       ▶ Play
                     </button>
                     <button class="btn btn-outline-light btn-lg px-4">
@@ -190,6 +257,12 @@ function createCarousel(movies) {
 }
 
 function goToMovie(id) {
+  if (!isAuthenticated()) {
+    localStorage.setItem('redirectAfterLogin', `movie.html?id=${id}`);
+    window.location.href = 'login.html';
+    return;
+  }
+
   window.location.href = `movie.html?id=${id}`;
 }
 
@@ -212,24 +285,6 @@ async function getMoviesByGenre(genreId) {
   const data = await res.json();
   return data.results;
 }
-
-// function renderTrendingRow(movies) {
-//   const container = document.getElementById('trendingRow');
-
-//   container.innerHTML = movies
-//     .map(
-//       (movie) => `
-//       <div class="movie-card" onclick="goToMovie(${movie.id})">
-//         <img
-//           src="https://image.tmdb.org/t/p/w500${movie.poster_path}"
-//           alt="${movie.title}"
-//         />
-//         <p class="text-white small mt-1">${movie.title}</p>
-//       </div>
-//     `,
-//     )
-//     .join('');
-// }
 
 function createRow(title, movies, rowId) {
   return `
@@ -355,6 +410,8 @@ async function renderAllRows() {
 }
 
 async function init() {
+  renderAuthUI();
+
   try {
     const movies = await getTrendingMovies();
 

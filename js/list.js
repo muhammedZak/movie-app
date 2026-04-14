@@ -1,9 +1,25 @@
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('currentUser'));
+}
+
 function getMyList() {
-  return JSON.parse(localStorage.getItem('myList')) || [];
+  const user = getCurrentUser();
+  if (!user) return [];
+
+  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
+
+  return allLists[user.email] || [];
 }
 
 function saveMyList(list) {
-  localStorage.setItem('myList', JSON.stringify(list));
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
+
+  allLists[user.email] = list;
+
+  localStorage.setItem('myList', JSON.stringify(allLists));
 }
 
 function removeFromList(e, id) {
@@ -67,8 +83,8 @@ function renderMyList() {
     .join('');
 }
 
-init();
-
 function init() {
   renderMyList();
 }
+
+init();
