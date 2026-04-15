@@ -18,10 +18,25 @@ function renderAuthUI() {
       <div class="profile-menu">
         <div class="avatar">${firstLetter}</div>
 
-        <div class="dropdown-menu-custom">
-          <p class="mb-2 fw-bold">${user.name}</p>
-          <a href="mylist.html">My List</a>
-          <button onclick="logout()">Logout</button>
+        <div class="dropdown-menu-pro">
+      
+          <div class="dropdown-header">
+            <div class="avatar small">${firstLetter}</div>
+            <div class="text">
+              <p class="name">${user.name}</p>
+              <p class="email">${user.email}</p>
+            </div>
+          </div>
+
+          <div class="dropdown-divider"></div>
+
+          <a href="profile.html">👤 Profile</a>
+          <a href="mylist.html">🎬 My List</a>
+
+          <div class="dropdown-divider"></div>
+
+          <button onclick="logout()">🚪 Logout</button>
+
         </div>
       </div>
     `;

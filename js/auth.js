@@ -1,19 +1,25 @@
 function register(name, email, password) {
   let users = JSON.parse(localStorage.getItem('users')) || [];
 
-  const userExist = users.find((user) => user.email === email);
-
-  if (userExist) {
+  const exists = users.find((user) => user.email === email);
+  if (exists) {
     alert('User already exists!');
     return;
   }
 
-  users.push({ name, email, password });
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    password,
+    avatar: null,
+  };
+
+  users.push(newUser);
 
   localStorage.setItem('users', JSON.stringify(users));
 
-  alert('Registration succussfull');
-  window.location.href = 'login.html';
+  window.location.href = 'index.html';
 }
 
 function login(email, password) {

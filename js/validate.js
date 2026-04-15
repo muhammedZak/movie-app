@@ -21,9 +21,9 @@ function validateRegister(nameInput, emailInput, passwordInput) {
 
   [nameInput, emailInput, passwordInput].forEach(clearError);
 
-  const name = nameInput;
-  const email = emailInput;
-  const password = passwordInput;
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if (name.length < 3) {
     showError(nameInput, 'Name must be atleast 3 charactors');
