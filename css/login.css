@@ -1,11 +1,9 @@
-
 .login-page {
   margin: 0;
   height: 100vh;
   font-family: 'Inter', sans-serif;
   position: relative;
 }
-
 
 .login-bg {
   position: absolute;
@@ -15,14 +13,12 @@
   z-index: 0;
 }
 
-
 .login-overlay {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
   z-index: 1;
 }
-
 
 .login-container {
   position: relative;
@@ -32,7 +28,6 @@
   justify-content: center;
   align-items: center;
 }
-
 
 .login-card {
   background: rgba(0, 0, 0, 0.75);
@@ -44,11 +39,9 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-
 .login-card h2 {
   font-weight: 700;
 }
-
 
 .login-card input {
   width: 100%;
@@ -65,7 +58,6 @@
   border: 1px solid #e50914;
 }
 
-
 .login-card button {
   width: 100%;
   padding: 12px;
@@ -81,7 +73,6 @@
   background: #f6121d;
 }
 
-
 .login-card a {
   color: #e50914;
   text-decoration: none;
@@ -89,6 +80,16 @@
 
 .login-card a:hover {
   text-decoration: underline;
+}
+
+.error-text {
+  color: #ff4d4f;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+input.is-invalid {
+  border: 1px solid #ff4d4f;
 }
 
 .login-card {
