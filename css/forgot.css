@@ -1,0 +1,68 @@
+body.forgot-page {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  color: #fff;
+}
+
+.bg {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4')
+    no-repeat center center/cover;
+  z-index: -2;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: -1;
+}
+
+.card-box {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 30px;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.form-control {
+  background: transparent;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+.form-control::placeholder {
+  color: #aaa;
+}
+
+.form-control:focus {
+  background: transparent;
+  border-color: #0d6efd;
+  box-shadow: none;
+  color: #fff;
+}
+
+.error-text {
+  color: #ff4d4f;
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.back-link {
+  color: #bbb;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: #fff;
+}

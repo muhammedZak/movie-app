@@ -92,6 +92,17 @@ input.is-invalid {
   border: 1px solid #ff4d4f;
 }
 
+.forgot-link {
+  font-size: 14px;
+  color: #bbb;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
 .login-card {
   animation: fadeIn 0.8s ease;
 }
