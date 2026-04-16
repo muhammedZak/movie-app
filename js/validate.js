@@ -2,6 +2,12 @@ function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isStrongPassword(password) {
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/.test(
+    password,
+  );
+}
+
 function showError(input, message) {
   input.classList.add('is-invalid');
 
@@ -26,7 +32,7 @@ function validateRegister(nameInput, emailInput, passwordInput) {
   const password = passwordInput.value.trim();
 
   if (name.length < 3) {
-    showError(nameInput, 'Name must be atleast 3 charactors');
+    showError(nameInput, 'Name must be at least 3 characters');
     isValid = false;
   }
 
@@ -35,8 +41,11 @@ function validateRegister(nameInput, emailInput, passwordInput) {
     isValid = false;
   }
 
-  if (password.length < 6) {
-    showError(passwordInput, 'Password must be at least 6 characters');
+  if (!isStrongPassword(password)) {
+    showError(
+      passwordInput,
+      'Password must contain uppercase, lowercase, number, and special character (min 6 chars)',
+    );
     isValid = false;
   }
 

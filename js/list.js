@@ -40,6 +40,20 @@ function goToMovie(id) {
   window.location.href = `movie.html?id=${id}`;
 }
 
+function updateStatus(movieId, newStatus) {
+  const list = getMyList();
+
+  const updatedList = list.map((movie) => {
+    if (movie.id === movieId) {
+      return { ...movie, status: newStatus };
+    }
+    return movie;
+  });
+
+  saveMyList(updatedList);
+  renderMyList();
+}
+
 function renderMyList() {
   const container = document.getElementById('myListContainer');
   const list = getMyList();
@@ -58,9 +72,9 @@ function renderMyList() {
     .map(
       (movie) => `
     <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-      
+
       <div class="mylist-card" onclick="goToMovie(${movie.id})">
-        
+
         <img src="${
           movie.poster_path?.startsWith('http')
             ? movie.poster_path
@@ -68,14 +82,29 @@ function renderMyList() {
         }" />
 
         <div class="card-overlay">
-            <p>${movie.title}</p>
+          <p>${movie.title}</p>
         </div>
-        
+
         <button class="remove-btn" onclick="removeFromList(event, ${movie.id})">
           ✕
         </button>
 
       </div>
+      <div class="movie-status">
+          <span class="status-pill ${movie.status}">
+            ${movie.status}
+          </span>
+
+          <div class="status-dropdown-wrapper" onclick="event.stopPropagation()">
+            <span class="arrow-icon">➡️</span>
+
+            <div class="status-menu">
+              <div onclick="updateStatus(${movie.id}, 'pending')">Pending</div>
+              <div onclick="updateStatus(${movie.id}, 'in-progress')">In Progress</div>
+              <div onclick="updateStatus(${movie.id}, 'completed')">Completed</div>
+            </div>
+          </div>
+        </div>
 
     </div>
   `,

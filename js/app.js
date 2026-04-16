@@ -45,15 +45,12 @@ function renderAuthUI() {
 
 function handlePlay(movieId) {
   if (!isAuthenticated()) {
-    // Optional: save where user wanted to go
     localStorage.setItem('redirectAfterLogin', `movie.html?id=${movieId}`);
 
-    // Redirect to login
     window.location.href = 'login.html';
     return;
   }
 
-  // If logged in → allow access
   window.location.href = `movie.html?id=${movieId}`;
 }
 
@@ -181,7 +178,7 @@ function toggleMyList(e, id, title, poster, btn) {
     list = list.filter((m) => m.id !== id);
     added = false;
   } else {
-    list.push({ id, title, poster_path: poster });
+    list.push({ id, title, poster_path: poster, status: 'pending' });
     added = true;
   }
 

@@ -61,6 +61,83 @@ body {
   transform: scale(1.1);
 }
 
+.movie-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #1e1e1e;
+  color: #fff;
+  font-size: 13px;
+  position: relative;
+}
+
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.status-pill.pending {
+  background: #6c757d;
+}
+
+.status-pill.in-progress {
+  background: #ff9800;
+}
+
+.status-pill.completed {
+  background: #4caf50;
+}
+
+.status-dropdown-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.status-dropdown-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  width: 100%;
+  height: 10px;
+}
+
+.arrow-icon {
+  font-size: 14px;
+}
+
+.status-menu {
+  position: absolute;
+  bottom: 28px;
+  right: 0;
+  background: #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  display: none;
+  min-width: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.status-dropdown-wrapper:hover .status-menu {
+  display: block;
+}
+
+.status-menu div {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.status-menu div:hover {
+  background: #3a3a3a;
+}
+
 header {
   background: linear-gradient(to bottom, #000, transparent);
   padding: 20px 40px;
