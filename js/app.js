@@ -1,9 +1,18 @@
 const API_KEY = 'a8ad44719bcd4d6f7d54ba6bf9c58086';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
+const searchInput = document.getElementById('searchInput');
+const navbar = document.querySelector('.navbar');
+const carouselContainer = document.getElementById('heroCarousel');
+const container = document.getElementById('movieRows');
+
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('currentUser'));
+}
+
 function renderAuthUI() {
   const authSection = document.getElementById('authSection');
-  const user = JSON.parse(localStorage.getItem('currentUser'));
+  const user = getCurrentUser();
 
   if (!user) {
     authSection.innerHTML = `
@@ -11,10 +20,12 @@ function renderAuthUI() {
         Login
       </a>
     `;
-  } else {
-    const firstLetter = user.name.charAt(0).toUpperCase();
+    return;
+  }
 
-    authSection.innerHTML = `
+  const firstLetter = user.name.charAt(0).toUpperCase();
+
+  authSection.innerHTML = `
       <div class="profile-menu">
         <div class="avatar">${firstLetter}</div>
 
@@ -40,84 +51,7 @@ function renderAuthUI() {
         </div>
       </div>
     `;
-  }
 }
-
-function handlePlay(movieId) {
-  if (!isAuthenticated()) {
-    localStorage.setItem('redirectAfterLogin', `movie.html?id=${movieId}`);
-
-    window.location.href = 'login.html';
-    return;
-  }
-
-  window.location.href = `movie.html?id=${movieId}`;
-}
-
-window.addEventListener('scroll', () => {
-  const navbar = document.querySelector('.navbar');
-
-  if (window.scrollY > 50) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
-});
-
-async function searchMovies(query) {
-  const res = await fetch(
-    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`,
-  );
-
-  const data = await res.json();
-  return data.results;
-}
-
-const searchInput = document.getElementById('searchInput');
-
-async function handleSearch(e) {
-  const query = e.target.value.trim();
-
-  const container = document.getElementById('movieRows');
-
-  if (!query) {
-    renderAllRows();
-    return;
-  }
-
-  container.innerHTML = `<p class="text-white px-4">Searching...</p>`;
-
-  try {
-    const movies = await searchMovies(query);
-
-    if (movies.length === 0) {
-      container.innerHTML = `
-        <div class="text-white px-4 mt-5">
-          <h4>No movies found 😢</h4>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = createRow(
-      `Search Results for "${query}"`,
-      movies,
-      'search',
-    );
-  } catch (error) {
-    container.innerHTML = `<p class="text-danger px-4">Error searching</p>`;
-  }
-}
-
-let debounceTimer;
-
-searchInput.addEventListener('input', (e) => {
-  clearTimeout(debounceTimer);
-
-  debounceTimer = setTimeout(() => {
-    handleSearch(e);
-  }, 400);
-});
 
 function showToast(message) {
   const toast = document.getElementById('toast');
@@ -128,10 +62,6 @@ function showToast(message) {
   setTimeout(() => {
     toast.classList.remove('show');
   }, 2000);
-}
-
-function getCurrentUser() {
-  return JSON.parse(localStorage.getItem('currentUser'));
 }
 
 function getMyList() {
@@ -158,9 +88,7 @@ function isInMyList(id) {
   return getMyList().some((movie) => Number(movie.id) === Number(id));
 }
 
-function toggleMyList(e, id, title, poster, btn) {
-  e.stopPropagation();
-
+function toggleMyList(id, title, poster, btn) {
   if (!isAuthenticated()) {
     showToast('Please login to add watchlist 🔒');
     setTimeout(() => {
@@ -175,7 +103,7 @@ function toggleMyList(e, id, title, poster, btn) {
   const exists = list.some((m) => Number(m.id) === Number(id));
 
   if (exists) {
-    list = list.filter((m) => m.id !== id);
+    list = list.filter((m) => Number(m.id) !== Number(id));
     added = false;
   } else {
     list.push({ id, title, poster_path: poster, status: 'pending' });
@@ -185,38 +113,187 @@ function toggleMyList(e, id, title, poster, btn) {
   saveMyList(list);
 
   const heart = btn.querySelector('.heart');
-  heart.classList.add('animate');
+  if (heart) {
+    heart.classList.add('animate');
 
-  setTimeout(() => {
-    heart.classList.remove('animate');
-  }, 300);
+    setTimeout(() => {
+      heart.classList.remove('animate');
+    }, 300);
+  }
 
   renderAllRows();
 
   showToast(added ? 'Added to My List ❤️' : 'Removed from My List ❌');
 }
 
-async function getTrendingMovies() {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`,
-    );
+async function fetchData(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
 
-    if (!res.ok) {
-      throw new Error('API error: ' + res.status);
-    }
+function getTrendingMovies() {
+  return fetchData(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}`);
+}
 
-    const data = await res.json();
-    return data.results;
-  } catch (error) {
-    console.error('Trending fetch error:', error);
-    return [];
+function getTopRatedMovies() {
+  return fetchData(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`);
+}
+
+function getGenres() {
+  return fetchData(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+}
+
+function getMoviesByGenre(genreId) {
+  return fetchData(
+    `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`,
+  );
+}
+
+function searchMovies(query) {
+  return fetchData(
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`,
+  );
+}
+
+function handlePlay(movieId) {
+  if (!isAuthenticated()) {
+    localStorage.setItem('redirectAfterLogin', `movie.html?id=${movieId}`);
+
+    window.location.href = 'login.html';
+    return;
   }
+
+  window.location.href = `movie.html?id=${movieId}`;
+}
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+let debounceTimer;
+
+searchInput.addEventListener('input', (e) => {
+  clearTimeout(debounceTimer);
+
+  debounceTimer = setTimeout(() => {
+    handleSearch(e);
+  }, 400);
+});
+
+// Play button listener
+document.addEventListener('click', (e) => {
+  const target = e.target;
+
+  const playBtn = target.closest('.play-btn, .card-img');
+  if (playBtn) {
+    const movieId = playBtn.dataset.id;
+
+    if (movieId) {
+      handlePlay(movieId);
+    }
+    return;
+  }
+
+  const watchlistBtn = target.closest('.watchlist-btn');
+  if (watchlistBtn) {
+    e.stopPropagation();
+    const { id, title, poster } = watchlistBtn.dataset;
+    toggleMyList(id, title, poster, watchlistBtn);
+    return;
+  }
+
+  const scrollBtn = target.closest('.scroll-btn');
+  if (scrollBtn) {
+    const rowId = scrollBtn.dataset.row;
+    const dir = Number(scrollBtn.dataset.dir);
+    scrollRow(rowId, dir);
+  }
+});
+
+function scrollRow(id, direction) {
+  const row = document.getElementById(id);
+  const scrollAmount = 400;
+
+  row.scrollBy({
+    left: direction * scrollAmount,
+    behavior: 'smooth',
+  });
+}
+
+function createSkeletonRow(title) {
+  return `
+    <div class="mb-5">
+      <h3 class="mb-3 fw-bold">${title}</h3>
+
+      <div class="movie-row">
+        ${Array(8)
+          .fill()
+          .map(
+            () => `
+            <div class="movie-card skeleton-card">
+              <div class="skeleton-img"></div>
+            </div>
+          `,
+          )
+          .join('')}
+      </div>
+    </div>
+  `;
+}
+
+function createRow(title, movies, rowId) {
+  return `
+    <div class="mb-5">
+      <h3 class="mb-3 fw-bold">${title}</h3>
+
+      <div class="row-wrapper">
+        <button class="scroll-btn left" data-row="${rowId}" data-dir="-1">❮</button>
+
+        <div id="${rowId}" class="movie-row">
+          ${movies
+            .map(
+              (movie) => `
+              <div class="movie-card">
+
+              <button 
+                 class="watchlist-btn"
+                 data-id="${movie.id}"
+                 data-title="${movie.title}"
+                 data-poster="${movie.poster_path}"
+              >
+                <span class="heart">
+                  ${isInMyList(movie.id) ? '❤️' : '🤍'}
+                </span>
+              </button>
+
+                <img
+                class="card-img"
+                src="${
+                  movie.poster_path?.startsWith('http')
+                    ? movie.poster_path
+                    : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                }"
+               
+                data-id="${movie.id}"
+              />
+              </div>
+            `,
+            )
+            .join('')}
+        </div>
+
+        <button class="scroll-btn right" data-row="${rowId}" data-dir="1">❯</button>
+      </div>
+    </div>
+  `;
 }
 
 function createCarousel(movies) {
-  const carouselContainer = document.getElementById('heroCarousel');
-
   carouselContainer.innerHTML = `
     <div id="carouselExample" class="w-100 carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
@@ -247,7 +324,7 @@ function createCarousel(movies) {
                   </p>
 
                   <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-light btn-lg px-4" onclick="handlePlay(${movie.id})">
+                    <button class="btn btn-light btn-lg px-4 play-btn" data-id="${movie.id}">
                       ▶ Play
                     </button>
                     <button class="btn btn-outline-light btn-lg px-4">
@@ -264,117 +341,42 @@ function createCarousel(movies) {
           .join('')}
       </div>
       </div>
-    </div>
+    
   `;
 }
 
-function goToMovie(id) {
-  if (!isAuthenticated()) {
-    localStorage.setItem('redirectAfterLogin', `movie.html?id=${id}`);
-    window.location.href = 'login.html';
+async function handleSearch(e) {
+  const query = e.target.value.trim();
+
+  if (!query) {
+    renderAllRows();
     return;
   }
 
-  window.location.href = `movie.html?id=${id}`;
-}
+  container.innerHTML = `<p class="text-white px-4">Searching...</p>`;
 
-async function getGenres() {
-  const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
-  const data = await res.json();
-  return data.genres;
-}
-
-async function getTopRatedMovies() {
-  const res = await fetch(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}`);
-  const data = await res.json();
-  return data.results;
-}
-
-async function getMoviesByGenre(genreId) {
-  const res = await fetch(
-    `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`,
-  );
-  const data = await res.json();
-  return data.results;
-}
-
-function createRow(title, movies, rowId) {
-  return `
-    <div class="mb-5">
-      <h3 class="mb-3 fw-bold">${title}</h3>
-
-      <div class="row-wrapper">
-        <button class="scroll-btn left" onclick="scrollRow('${rowId}', -1)">❮</button>
-
-        <div id="${rowId}" class="movie-row">
-          ${movies
-            .map(
-              (movie) => `
-              <div class="movie-card">
-
-              <button 
-                 class="watchlist-btn"
-                 onclick="toggleMyList(event, ${movie.id}, '${movie.title}', '${movie.poster_path}', this)"
-              >
-                <span class="heart">
-                  ${isInMyList(movie.id) ? '❤️' : '🤍'}
-                </span>
-              </button>
-
-                <img
-                src="${
-                  movie.poster_path?.startsWith('http')
-                    ? movie.poster_path
-                    : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                }"
-                onclick="goToMovie(${movie.id})"
-              />
-              </div>
-            `,
-            )
-            .join('')}
+  try {
+    const movies = await searchMovies(query);
+    if (movies.results.length === 0) {
+      container.innerHTML = `
+        <div class="text-white px-4 mt-5">
+          <h4>No movies found 😢</h4>
         </div>
+      `;
+      return;
+    }
 
-        <button class="scroll-btn right" onclick="scrollRow('${rowId}', 1)">❯</button>
-      </div>
-    </div>
-  `;
-}
-
-function createSkeletonRow(title) {
-  return `
-    <div class="mb-5">
-      <h3 class="mb-3 fw-bold">${title}</h3>
-
-      <div class="movie-row">
-        ${Array(8)
-          .fill()
-          .map(
-            () => `
-            <div class="movie-card skeleton-card">
-              <div class="skeleton-img"></div>
-            </div>
-          `,
-          )
-          .join('')}
-      </div>
-    </div>
-  `;
-}
-
-function scrollRow(id, direction) {
-  const row = document.getElementById(id);
-  const scrollAmount = 400;
-
-  row.scrollBy({
-    left: direction * scrollAmount,
-    behavior: 'smooth',
-  });
+    container.innerHTML = createRow(
+      `Search Results for "${query}"`,
+      movies.results,
+      'search',
+    );
+  } catch (error) {
+    container.innerHTML = `<p class="text-danger px-4">Error searching</p>`;
+  }
 }
 
 async function renderAllRows() {
-  const container = document.getElementById('movieRows');
-
   container.innerHTML = `
     ${createSkeletonRow('Trending')}
     ${createSkeletonRow('Top Rated')}
@@ -390,11 +392,11 @@ async function renderAllRows() {
     ]);
 
     let html = `
-      ${createRow('Trending', trending, 'r1')}
-      ${createRow('Top Rated', topRated, 'r2')}
+      ${createRow('Trending', trending.results, 'r1')}
+      ${createRow('Top Rated', topRated.results, 'r2')}
     `;
 
-    const selectedGenres = genres.slice(0, 6);
+    const selectedGenres = genres.genres.slice(0, 6);
 
     const genrePromises = selectedGenres.map((g) => getMoviesByGenre(g.id));
 
@@ -402,7 +404,7 @@ async function renderAllRows() {
 
     genreMovies.forEach((movies, index) => {
       const genre = selectedGenres[index];
-      html += createRow(genre.name, movies, `g${genre.id}`);
+      html += createRow(genre.name, movies.results, `g${genre.id}`);
     });
 
     container.innerHTML = html;
@@ -412,7 +414,7 @@ async function renderAllRows() {
     container.classList.add('fade-in');
   } catch (error) {
     console.error('Error loading rows:', error);
-    container.innerHTML = container.innerHTML = `
+    container.innerHTML = `
   <div class="error-state">
     <h2>⚠️ Failed to load movies</h2>
     <p>Please check your internet connection</p>
@@ -427,7 +429,7 @@ async function init() {
   try {
     const movies = await getTrendingMovies();
 
-    if (movies.length > 0) createCarousel(movies);
+    if (movies.results.length > 0) createCarousel(movies.results);
 
     renderAllRows();
   } catch (error) {

@@ -22,11 +22,9 @@ function saveMyList(list) {
   localStorage.setItem('myList', JSON.stringify(allLists));
 }
 
-function removeFromList(e, id) {
-  e.stopPropagation();
-
+function removeFromList(id) {
   let list = getMyList();
-  list = list.filter((m) => m.id !== id);
+  list = list.filter((m) => Number(m.id) !== Number(id));
 
   saveMyList(list);
   renderMyList();
@@ -44,7 +42,15 @@ function updateStatus(movieId, newStatus) {
   const list = getMyList();
 
   const updatedList = list.map((movie) => {
-    if (movie.id === movieId) {
+    if (Number(movie.id) === Number(movieId)) {
+      if (
+        newStatus === movie.status ||
+        movie.status === 'completed' ||
+        newStatus === 'pending'
+      ) {
+        return movie;
+      }
+
       return { ...movie, status: newStatus };
     }
     return movie;
@@ -53,6 +59,37 @@ function updateStatus(movieId, newStatus) {
   saveMyList(updatedList);
   renderMyList();
 }
+
+document.addEventListener('click', (e) => {
+  const target = e.target;
+
+  const removeBtn = target.closest('.remove-btn');
+  if (removeBtn) {
+    console.log(removeBtn);
+    e.stopPropagation();
+    const movieId = removeBtn.dataset.id;
+    removeFromList(movieId);
+    return;
+  }
+
+  const playBtn = target.closest('.mylist-card');
+  if (playBtn) {
+    const movieId = playBtn.dataset.id;
+    goToMovie(movieId);
+    return;
+  }
+
+  const statusOption = target.closest('.status-option');
+  if (statusOption) {
+    e.stopPropagation();
+
+    const movieId = statusOption.dataset.id;
+    const newStatus = statusOption.dataset.status;
+
+    updateStatus(movieId, newStatus);
+    return;
+  }
+});
 
 function renderMyList() {
   const container = document.getElementById('myListContainer');
@@ -73,7 +110,7 @@ function renderMyList() {
       (movie) => `
     <div class="col-6 col-sm-4 col-md-3 col-lg-2">
 
-      <div class="mylist-card" onclick="goToMovie(${movie.id})">
+      <div class="mylist-card" data-id="${movie.id}">
 
         <img src="${
           movie.poster_path?.startsWith('http')
@@ -85,7 +122,7 @@ function renderMyList() {
           <p>${movie.title}</p>
         </div>
 
-        <button class="remove-btn" onclick="removeFromList(event, ${movie.id})">
+        <button class="remove-btn" data-id="${movie.id}">
           ✕
         </button>
 
@@ -95,15 +132,15 @@ function renderMyList() {
             ${movie.status}
           </span>
 
-          <div class="status-dropdown-wrapper" onclick="event.stopPropagation()">
+          <div class="status-dropdown-wrapper">
             <span class="arrow-icon">➡️</span>
 
             <div class="status-menu">
-              <div onclick="updateStatus(${movie.id}, 'pending')">Pending</div>
-              <div onclick="updateStatus(${movie.id}, 'in-progress')">In Progress</div>
-              <div onclick="updateStatus(${movie.id}, 'completed')">Completed</div>
+              <div class="status-option" data-id="${movie.id}" data-status="pending">Pending</div>
+              <div class="status-option" data-id="${movie.id}" data-status="in-progress">In Progress</div>
+              <div class="status-option" data-id="${movie.id}" data-status="completed">Completed</div>
             </div>
-          </div>
+        </div>
         </div>
 
     </div>

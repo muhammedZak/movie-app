@@ -2,7 +2,11 @@ const API_KEY = 'a8ad44719bcd4d6f7d54ba6bf9c58086';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
 function goBack() {
-  window.location.href = 'index.html';
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
 }
 
 const params = new URLSearchParams(window.location.search);
