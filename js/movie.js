@@ -1,14 +1,6 @@
 const API_KEY = 'a8ad44719bcd4d6f7d54ba6bf9c58086';
 const BASE_URL = 'https://api.themoviedb.org/3';
 
-function goBack() {
-  if (window.history.length > 1) {
-    window.history.back();
-  } else {
-    window.location.href = 'index.html';
-  }
-}
-
 const params = new URLSearchParams(window.location.search);
 const movieId = params.get('id');
 
@@ -23,11 +15,19 @@ async function getMovieVideos(id) {
   return data.results;
 }
 
+function goBack() {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
+}
+
 function renderMovie(movie, videoKey) {
   const container = document.getElementById('movieDetails');
 
   container.innerHTML = `
-    <button class="back-btn" onclick="goBack()">← Back</button>
+    <button class="back-btn">← Back</button>
     
     <div class="movie-hero" 
       style="background-image: url(https://image.tmdb.org/t/p/original${movie.backdrop_path})">
@@ -61,6 +61,7 @@ function renderMovie(movie, videoKey) {
       </div>
     </div>
   `;
+  document.querySelector('.back-btn').addEventListener('click', goBack);
 }
 
 async function init() {

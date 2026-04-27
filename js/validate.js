@@ -22,10 +22,14 @@ function clearError(input) {
   errorDiv.textContent = '';
 }
 
-function validateRegister(nameInput, emailInput, passwordInput) {
+export const validateRegister = (nameInput, emailInput, passwordInput) => {
   let isValid = true;
 
-  [nameInput, emailInput, passwordInput].forEach(clearError);
+  clearError(nameInput);
+  clearError(emailInput);
+  clearError(passwordInput);
+
+  [(nameInput, emailInput, passwordInput)].forEach(clearError);
 
   const name = nameInput.value.trim();
   const email = emailInput.value.trim();
@@ -50,11 +54,10 @@ function validateRegister(nameInput, emailInput, passwordInput) {
   }
 
   return isValid;
-}
+};
 
-function validateLogin(emailInput, passwordInput) {
+export const validateLogin = (emailInput, passwordInput) => {
   let isValid = true;
-
   clearError(emailInput);
   clearError(passwordInput);
 
@@ -72,4 +75,4 @@ function validateLogin(emailInput, passwordInput) {
   }
 
   return isValid;
-}
+};

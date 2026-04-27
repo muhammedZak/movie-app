@@ -1,8 +1,14 @@
-const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+import { getCurrentUser } from './state.js';
+
+const currentUser = getCurrentUser();
 
 if (!currentUser) {
   window.location.href = 'login.html';
 }
+
+const updateBtn = document.querySelector('.update-btn');
+
+updateBtn.addEventListener('click', updateProfile);
 
 document.getElementById('name').value = currentUser.name;
 document.getElementById('email').value = currentUser.email;

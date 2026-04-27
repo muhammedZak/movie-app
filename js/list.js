@@ -1,25 +1,13 @@
-function getCurrentUser() {
-  return JSON.parse(localStorage.getItem('currentUser'));
+import { getMyList, saveMyList } from './state.js';
+
+document.querySelector('.home-btn').addEventListener('click', goHome);
+
+function goHome() {
+  window.location.href = 'index.html';
 }
 
-function getMyList() {
-  const user = getCurrentUser();
-  if (!user) return [];
-
-  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
-
-  return allLists[user.email] || [];
-}
-
-function saveMyList(list) {
-  const user = getCurrentUser();
-  if (!user) return;
-
-  const allLists = JSON.parse(localStorage.getItem('myList')) || {};
-
-  allLists[user.email] = list;
-
-  localStorage.setItem('myList', JSON.stringify(allLists));
+function getList() {
+  return JSON.parse(localStorage.getItem('myList')) || {};
 }
 
 function removeFromList(id) {
@@ -28,10 +16,6 @@ function removeFromList(id) {
 
   saveMyList(list);
   renderMyList();
-}
-
-function goHome() {
-  window.location.href = 'index.html';
 }
 
 function goToMovie(id) {
@@ -65,7 +49,6 @@ document.addEventListener('click', (e) => {
 
   const removeBtn = target.closest('.remove-btn');
   if (removeBtn) {
-    console.log(removeBtn);
     e.stopPropagation();
     const movieId = removeBtn.dataset.id;
     removeFromList(movieId);

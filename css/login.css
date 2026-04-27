@@ -107,6 +107,27 @@ input.is-invalid {
   animation: fadeIn 0.8s ease;
 }
 
+.toast-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 999;
+
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+}
+
+.toast-box.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
