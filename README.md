@@ -36,18 +36,13 @@ The goal was to create a project that feels closer to a real-world streaming pla
 
 ## Demo / Screenshots
 
-You can add the following when available:
+Live Demo: [View StreamMini](https://streammini-app.netlify.app/)
 
-- `Live Demo:` add your deployed project URL here
-- `Screenshots:` add preview images or GIFs of the home page, movie details page, login flow, and watchlist
+### Screenshots
 
-Suggested screenshot sections:
-
-- Home page hero and movie rows
-- Search and browse experience
-- Movie details page with trailer
-- My List watchlist page
-- Authentication and profile pages
+![Home Page](assets/home-page1.png)
+![Browse and Search](assets/home-page2.png)
+![My List](assets/list-page.png)
 
 ## Features
 
@@ -87,6 +82,10 @@ Suggested screenshot sections:
 
 ```text
 stream-mini/
+├── assets/
+│   ├── home-page1.png
+│   ├── home-page2.png
+│   └── list-page.png
 ├── css/
 │   ├── forgot.css
 │   ├── list.css
@@ -122,6 +121,7 @@ stream-mini/
 ## How It Works
 
 ### Movie Data
+
 Movie content is fetched from the TMDB API, including:
 
 - trending movies
@@ -132,21 +132,24 @@ Movie content is fetched from the TMDB API, including:
 - trailers and video metadata
 
 ### Authentication
+
 This project uses browser `localStorage` instead of a backend authentication system. User registration, login state, profile updates, and watchlist data are stored locally in the browser.
 
 ### Watchlist
+
 Each signed-in user gets a separate saved list keyed by email. Movies can be added or removed, and each entry can be updated with a progress status.
 
 ### Forgot Password
+
 The forgot-password flow generates an OTP in the browser, stores it temporarily in `localStorage`, and sends it through EmailJS for verification before allowing a password reset.
 
 ## Getting Started
 
 Because the project uses ES modules, open it through a local server instead of double-clicking the HTML files.
 
-### Option 1: VS Code / Cursor Live Server
+### Option 1: VS Code
 
-1. Open the project folder in Cursor or VS Code.
+1. Open the project folder in VS Code.
 2. Start a local server using Live Server or a similar extension.
 3. Open `index.html` in the browser through that server.
 
@@ -167,6 +170,7 @@ http://localhost:5500
 ## Configuration Notes
 
 ### TMDB API
+
 The project currently reads TMDB requests from `js/api.js` and `js/movie.js`.
 
 If you want to use your own TMDB key:
@@ -178,6 +182,7 @@ If you want to use your own TMDB key:
    - `js/movie.js`
 
 ### EmailJS
+
 The forgot-password flow depends on EmailJS values configured in `forgot.html` and `js/forgot.js`.
 
 If you want to connect your own EmailJS setup, update:
